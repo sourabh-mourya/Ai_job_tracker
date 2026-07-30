@@ -51,9 +51,9 @@ function StatusBadge({ status, id, onUpdate }) {
 }
 
 function exportToCSV(data) {
-  const headers = ['ID', 'Company', 'Position', 'Date Applied', 'Source', 'Status', 'Location', 'Recruiter', 'Confidence', 'Notes'];
+  const headers = ['ID', 'Company', 'Position', 'Date Applied', 'Source', 'Status', 'Location', 'Recruiter', 'Notes'];
   const rows = data.map((a) => [
-    a.id, a.company, a.position, a.appliedDate, a.source, a.status, a.location, a.recruiter, a.confidence, a.notes
+    a.id, a.company, a.position, a.appliedDate, a.source, a.status, a.location, a.recruiter, a.notes
   ].map((v) => `"${v ?? ''}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -113,7 +113,7 @@ export default function ApplicationTable() {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                    {['Date', 'Company', 'Position', 'Source', 'Status', 'Location', 'Confidence', ''].map((h) => (
+                    {['Date', 'Company', 'Position', 'Source', 'Status', 'Location', ''].map((h) => (
                       <th key={h} className="px-4 py-3 text-left font-semibold text-gray-500 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
@@ -129,19 +129,7 @@ export default function ApplicationTable() {
                         <StatusBadge status={app.status} id={app.id} onUpdate={updateApplication} />
                       </td>
                       <td className="px-4 py-3 text-gray-500 max-w-[120px] truncate">{app.location || '—'}</td>
-                      <td className="px-4 py-3">
-                        {app.confidence != null && (
-                          <div className="flex items-center space-x-1.5">
-                            <div className="w-14 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                              <div
-                                className={`h-full rounded-full ${app.confidence >= 80 ? 'bg-emerald-500' : app.confidence >= 60 ? 'bg-amber-500' : 'bg-rose-500'}`}
-                                style={{ width: `${app.confidence}%` }}
-                              />
-                            </div>
-                            <span className="text-gray-500">{app.confidence}%</span>
-                          </div>
-                        )}
-                      </td>
+
                       <td className="px-4 py-3">
                         <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
@@ -189,10 +177,8 @@ export default function ApplicationTable() {
                       {app.location || '—'}
                     </div>
                     <div className="flex items-center justify-between">
-                      <div>
-                        <span className="block font-medium text-gray-400 mb-0.5 uppercase tracking-wider text-[9px]">Confidence</span>
-                        {app.confidence}%
-                      </div>
+                        {/* Placeholder to keep layout balanced if needed, or just left empty */}
+                        <div />
                       <button
                         onClick={() => handleDelete(app.id)}
                         disabled={deletingId === app.id}
