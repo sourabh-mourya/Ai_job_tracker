@@ -11,7 +11,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!password) return;
-    
+
     setLoading(true);
     setError('');
 
@@ -23,7 +23,7 @@ export default function Login() {
       });
 
       if (res.status === 401) {
-        setError('Incorrect password');
+        setError('Nice try! 😂 Only Admin has access.');
       } else {
         login(password);
       }
@@ -36,7 +36,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 flex flex-col items-center justify-center p-4">
-      
+
       <div className="mb-8 text-center">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 mx-auto mb-4">
           <Briefcase className="w-8 h-8 text-white" />
@@ -54,7 +54,7 @@ export default function Login() {
             <Lock className="w-6 h-6 text-indigo-600" />
           </div>
         </div>
-        
+
         <h2 className="text-xl font-bold text-gray-900 text-center mb-2">Restricted Access</h2>
         <p className="text-sm text-gray-500 text-center mb-8">Please enter your Master Password to unlock the workspace.</p>
 
