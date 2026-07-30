@@ -22,10 +22,12 @@ export default function Login() {
         headers: { 'x-app-password': password }
       });
 
-      if (res.status === 401) {
+      if (res.ok) {
+        login(password);
+      } else if (res.status === 401) {
         setError('Nice try! 😂 Only Admin has access.');
       } else {
-        login(password);
+        setError('Server error. Please wait or try again.');
       }
     } catch (err) {
       setError('Network error. Please try again.');
