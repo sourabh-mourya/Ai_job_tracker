@@ -25,6 +25,7 @@ model Application {
   confidence  Float?
   notes       String?
   tags        String?
+  imageHash   String?   @unique
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

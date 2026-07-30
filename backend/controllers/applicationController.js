@@ -1,5 +1,6 @@
 import prisma from '../config/db.js';
 import { extractFromImage } from '../services/extractionService.js';
+import crypto from 'crypto';
 
 export const uploadBulk = async (req, res) => {
   const files = req.files;
@@ -13,27 +14,25 @@ export const uploadBulk = async (req, res) => {
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     try {
-      const extracted = await extractFromImage(file.buffer, file.mimetype);
+      const imageHash = crypto.createHash('sha256').update(file.buffer).digest('hex');
 
-      const existing = await prisma.application.findFirst({
-        where: {
-          company: extracted.company,
-          position: extracted.position || '',
-          appliedDate: extracted.applied_date || '',
-        },
+      const existing = await prisma.application.findUnique({
+        where: { imageHash },
       });
 
       if (existing) {
         errors.push({
           file: file.originalname,
-          error: `Duplicate: ${extracted.company} – ${extracted.position} already exists.`,
+          error: `Duplicate: This exact same image has already been uploaded.`,
           isDuplicate: true,
         });
       } else {
+        const extracted = await extractFromImage(file.buffer, file.mimetype);
+
         const record = await prisma.application.create({
           data: {
             company: extracted.company,
-            position: extracted.position || null,
+            position: extracted.position,
             appliedDate: new Date().toISOString().split('T')[0],
             source: extracted.source || null,
             status: 'Applied',
@@ -41,6 +40,7 @@ export const uploadBulk = async (req, res) => {
             recruiter: extracted.recruiter || null,
             confidence: extracted.confidence || null,
             notes: null,
+            imageHash,
           },
         });
         results.push({ file: file.originalname, data: record });
@@ -103,7 +103,7 @@ export const addApplication = async (req, res) => {
     if (!company) {
       return res.status(400).json({ success: false, error: 'Company is required.' });
     }
-    
+
     const application = await prisma.application.create({
       data: {
         company,
@@ -116,7 +116,7 @@ export const addApplication = async (req, res) => {
         notes: notes || null,
       }
     });
-    
+
     return res.status(201).json({ success: true, application });
   } catch (err) {
     console.error('[POST /applications]', err.message);
