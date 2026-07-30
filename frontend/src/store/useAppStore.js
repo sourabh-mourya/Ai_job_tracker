@@ -5,9 +5,11 @@ const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://local
 
 // Setup Axios Interceptor to attach password
 axios.interceptors.request.use((config) => {
-  const password = localStorage.getItem('app_password');
-  if (password) {
-    config.headers['x-app-password'] = password;
+  const encoded = localStorage.getItem('app_token');
+  if (encoded) {
+    try {
+      config.headers['x-app-password'] = atob(encoded);
+    } catch(e) {}
   }
   return config;
 });
@@ -19,7 +21,7 @@ export const useAppStore = create((set, get) => {
     (error) => {
       if (error.response && error.response.status === 401) {
         set({ isAuthenticated: false });
-        localStorage.removeItem('app_password');
+        localStorage.removeItem('app_token');
       }
       return Promise.reject(error);
     }
@@ -27,15 +29,15 @@ export const useAppStore = create((set, get) => {
 
   return {
     // ─── Auth State ───────────────────────────────────────────────────────────────
-    isAuthenticated: !!localStorage.getItem('app_password'),
+    isAuthenticated: !!localStorage.getItem('app_token'),
     login: (password) => {
-      localStorage.setItem('app_password', password);
+      localStorage.setItem('app_token', btoa(password));
       set({ isAuthenticated: true });
       get().fetchApplications();
       get().fetchAnalytics();
     },
     logout: () => {
-      localStorage.removeItem('app_password');
+      localStorage.removeItem('app_token');
       set({ isAuthenticated: false });
     },
 
