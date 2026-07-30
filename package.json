@@ -17,5 +17,8 @@
     "multer": "^1.4.5-lts.1",
     "tesseract.js": "^7.0.0",
     "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
   }
 }
