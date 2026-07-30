@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pencil, Trash2, ExternalLink, Check, X, Download } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import Modal from '../common/Modal';
 
 const STATUS_OPTIONS = ['Applied', 'In Review', 'OA Sent', 'Interviewing', 'HR Round', 'Offered', 'Rejected'];
 const STATUS_COLORS = {
@@ -68,12 +69,18 @@ function exportToCSV(data) {
 export default function ApplicationTable() {
   const { applications, totalApplications, appLoading, appFilters, fetchApplications, updateApplication, deleteApplication } = useAppStore();
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null); // ID of app pending deletion confirmation
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this application?')) return;
-    setDeletingId(id);
-    await deleteApplication(id);
+  const confirmDelete = (id) => {
+    setConfirmDeleteId(id);
+  };
+
+  const handleDelete = async () => {
+    if (!confirmDeleteId) return;
+    setDeletingId(confirmDeleteId);
+    await deleteApplication(confirmDeleteId);
     setDeletingId(null);
+    setConfirmDeleteId(null);
   };
 
   return (
@@ -133,7 +140,7 @@ export default function ApplicationTable() {
                       <td className="px-4 py-3">
                         <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
-                            onClick={() => handleDelete(app.id)}
+                            onClick={() => confirmDelete(app.id)}
                             disabled={deletingId === app.id}
                             className="p-1.5 rounded-lg hover:bg-rose-50 text-gray-400 hover:text-rose-600 transition-colors"
                             title="Delete"
@@ -180,7 +187,7 @@ export default function ApplicationTable() {
                         {/* Placeholder to keep layout balanced if needed, or just left empty */}
                         <div />
                       <button
-                        onClick={() => handleDelete(app.id)}
+                        onClick={() => confirmDelete(app.id)}
                         disabled={deletingId === app.id}
                         className="p-2 rounded-lg bg-gray-50 hover:bg-rose-50 text-gray-400 hover:text-rose-600 transition-colors border border-gray-100"
                       >
@@ -197,6 +204,28 @@ export default function ApplicationTable() {
           </>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)} title="Delete Application">
+        <div className="text-sm text-gray-600 mb-6">
+          Are you sure you want to permanently delete this job application? This action cannot be undone.
+        </div>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={() => setConfirmDeleteId(null)}
+            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={!!deletingId}
+            className="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md shadow-rose-500/20 transition-all flex items-center justify-center min-w-[90px]"
+          >
+            {deletingId ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Delete'}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
-    "install": "cd api && npm install"
+    "install": "cd backend && npm install"
   }
 }

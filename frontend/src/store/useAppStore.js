@@ -3,8 +3,43 @@ import axios from 'axios';
 
 const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000/api' : '/api');
 
-export const useAppStore = create((set, get) => ({
-  // ─── Applications State ─────────────────────────────────────────────────────
+// Setup Axios Interceptor to attach password
+axios.interceptors.request.use((config) => {
+  const password = localStorage.getItem('app_password');
+  if (password) {
+    config.headers['x-app-password'] = password;
+  }
+  return config;
+});
+
+export const useAppStore = create((set, get) => {
+  // Handle 401 Unauthorized globally
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response && error.response.status === 401) {
+        set({ isAuthenticated: false });
+        localStorage.removeItem('app_password');
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return {
+    // ─── Auth State ───────────────────────────────────────────────────────────────
+    isAuthenticated: !!localStorage.getItem('app_password'),
+    login: (password) => {
+      localStorage.setItem('app_password', password);
+      set({ isAuthenticated: true });
+      get().fetchApplications();
+      get().fetchAnalytics();
+    },
+    logout: () => {
+      localStorage.removeItem('app_password');
+      set({ isAuthenticated: false });
+    },
+
+    // ─── Applications State ─────────────────────────────────────────────────────
   applications: [],
   totalApplications: 0,
   appFilters: { search: '', status: 'all', source: 'all', sort: 'createdAt', order: 'desc' },
@@ -187,4 +222,5 @@ export const useAppStore = create((set, get) => ({
   },
 
   clearUploadQueue: () => set({ uploadQueue: [] }),
-}));
+  };
+});
