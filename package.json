@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node backend/index.js",
     "dev": "node --watch backend/index.js",
-    "build": "cd frontend && npm install && npm run build && cd .. && mkdir -p backend/node_modules/tesseract.js-core && cp node_modules/tesseract.js-core/*.wasm backend/node_modules/tesseract.js-core/ || true",
+    "build": "npx prisma generate && cd frontend && npm install && npm run build && cd .. && mkdir -p backend/node_modules/tesseract.js-core && cp node_modules/tesseract.js-core/*.wasm backend/node_modules/tesseract.js-core/ || true",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
