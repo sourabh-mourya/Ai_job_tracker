@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// To switch to PostgreSQL (Neon), change provider to "postgresql"
+// and update DATABASE_URL in .env to your Neon connection string.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Application {
+  id          Int       @id @default(autoincrement())
+  company     String
+  position    String?
+  appliedDate String?
+  source      String?
+  status      String    @default("Applied")
+  location    String?
+  recruiter   String?
+  confidence  Float?
+  notes       String?
+  tags        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ColdEmail {
+  id               Int       @id @default(autoincrement())
+  company          String
+  recruiterName    String?
+  recruiterEmail   String?
+  sentDate         String
+  followUpDate     String?
+  responseReceived Boolean   @default(false)
+  responseDate     String?
+  status           String    @default("Sent")
+  notes            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}

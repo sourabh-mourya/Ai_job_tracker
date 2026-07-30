@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #111827;
+    background-color: #ffffff;
+  }
+}
+
+/* Ensure absolutely zero box-shadow across elements */
+*, ::before, ::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Focus styles strictly using border color changes */
+input:focus, select:focus, textarea:focus, button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
