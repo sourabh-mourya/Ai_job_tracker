@@ -1,14 +1,9 @@
 {
-  "name": "ai-job-sheet-tracker",
+  "name": "ai-job-tracker-root",
   "version": "1.0.0",
-  "description": "Vercel-ready AI Job Sheet Tracker using Gemini Flash Vision and Google Sheets API.",
-  "type": "module",
+  "private": true,
   "scripts": {
-    "start": "cd backend && npm start",
-    "dev": "cd backend && npm run dev",
-    "build": "cd frontend && npm install && npm run build"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "build": "cd frontend && npm install && npm run build",
+    "install": "cd api && npm install"
   }
 }

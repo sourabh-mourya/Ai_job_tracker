@@ -15,14 +15,14 @@ pnpm-debug.log*
 
 # Build outputs
 frontend/dist/
-backend/dist/
+api/dist/
 build/
 out/
 
 # Database
-backend/prisma/*.db
-backend/*.db
-backend/*.db-journal
+api/prisma/*.db
+api/*.db
+api/*.db-journal
 
 # Logs
 logs
