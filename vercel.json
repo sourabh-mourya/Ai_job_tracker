@@ -1,6 +1,11 @@
 {
   "version": 2,
   "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "api/node_modules/tesseract.js-core/**/*.wasm"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",

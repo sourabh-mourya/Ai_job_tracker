@@ -135,41 +135,55 @@ export const useAppStore = create((set, get) => ({
     if (!queue.length) return;
     set({ isUploading: true });
 
-    const formData = new FormData();
-    queue.forEach((item) => formData.append('images', item.file));
+    // Process one by one to avoid Vercel 4.5MB payload limit and 10s timeout
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i];
+      if (item.status !== 'pending') continue;
 
-    // Mark all as processing
-    set({ uploadQueue: queue.map((q) => ({ ...q, status: 'processing' })) });
+      // Mark current item as processing
+      set((state) => ({
+        uploadQueue: state.uploadQueue.map((q, idx) => (idx === i ? { ...q, status: 'processing' } : q)),
+      }));
 
-    try {
-      const res = await axios.post(`${API}/applications/upload-bulk`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const formData = new FormData();
+      formData.append('images', item.file);
 
-      const { results, errors } = res.data;
+      try {
+        const res = await axios.post(`${API}/applications/upload-bulk`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
 
-      set({
-        uploadQueue: queue.map((item) => {
-          const success = results.find((r) => r.file === item.file.name);
-          const failed = errors.find((e) => e.file === item.file.name);
+        const { results, errors } = res.data;
+        const success = results.find((r) => r.file === item.file.name);
+        const failed = errors.find((e) => e.file === item.file.name);
 
-          if (success) return { ...item, status: 'done', result: success.data };
-          if (failed?.isDuplicate) return { ...item, status: 'duplicate', error: failed.error };
-          if (failed) return { ...item, status: 'error', error: failed.error };
-          return { ...item, status: 'done' };
-        }),
-      });
+        set((state) => ({
+          uploadQueue: state.uploadQueue.map((q, idx) => {
+            if (idx !== i) return q;
+            if (success) return { ...q, status: 'done', result: success.data };
+            if (failed?.isDuplicate) return { ...q, status: 'duplicate', error: failed.error };
+            if (failed) return { ...q, status: 'error', error: failed.error };
+            return { ...q, status: 'error', error: 'Unknown error' };
+          }),
+        }));
 
-      // Refresh data
-      get().fetchApplications();
-      get().fetchAnalytics();
-    } catch (err) {
-      set({
-        uploadQueue: queue.map((q) => ({ ...q, status: 'error', error: err.message })),
-      });
-    } finally {
-      set({ isUploading: false });
+        if (failed && !failed.isDuplicate) {
+          alert(`Processing stopped due to error: ${failed.error}`);
+          break;
+        }
+      } catch (err) {
+        set((state) => ({
+          uploadQueue: state.uploadQueue.map((q, idx) => (idx === i ? { ...q, status: 'error', error: err.message } : q)),
+        }));
+        alert(`Processing stopped due to Server/Network Error: ${err.message}`);
+        break;
+      }
     }
+
+    // Refresh data after all uploads
+    get().fetchApplications();
+    get().fetchAnalytics();
+    set({ isUploading: false });
   },
 
   clearUploadQueue: () => set({ uploadQueue: [] }),
