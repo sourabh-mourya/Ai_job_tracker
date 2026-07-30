@@ -1,6 +1,7 @@
 import { createWorker } from 'tesseract.js';
 import { z } from 'zod';
 import { JOB_EXTRACTION_PROMPT } from '../utils/prompt.js';
+import path from 'path';
 
 export const jobDataSchema = z.object({
   company: z.string().min(1).catch('Unknown Company'),
@@ -18,6 +19,7 @@ async function runLocalOCR(imageBuffer) {
     // Use /tmp for serverless read-only filesystem compatibility
     const worker = await createWorker('eng', 1, {
       cachePath: '/tmp',
+      corePath: path.join(process.cwd(), 'node_modules', 'tesseract.js-core')
       // logger: (m) => console.log(`[OCR] ${m.status} - ${Math.round(m.progress * 100)}%`) // Disabled to reduce console spam
     });
     const { data } = await worker.recognize(imageBuffer);
