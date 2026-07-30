@@ -18,7 +18,7 @@ async function runLocalOCR(imageBuffer) {
     // Use /tmp for serverless read-only filesystem compatibility
     const worker = await createWorker('eng', 1, {
       cachePath: '/tmp',
-      logger: (m) => console.log(`[OCR] ${m.status} - ${Math.round(m.progress * 100)}%`)
+      // logger: (m) => console.log(`[OCR] ${m.status} - ${Math.round(m.progress * 100)}%`) // Disabled to reduce console spam
     });
     const { data } = await worker.recognize(imageBuffer);
     await worker.terminate();

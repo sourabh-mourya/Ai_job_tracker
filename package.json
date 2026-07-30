@@ -2,7 +2,10 @@
   "name": "ai-job-tracker-root",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
+    "start": "node backend/index.js",
+    "dev": "node --watch backend/index.js",
     "build": "cd frontend && npm install && npm run build",
     "postinstall": "npx prisma generate"
   },
