@@ -9,7 +9,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "node_modules/tesseract.js-core/**/*.wasm"
+      "includeFiles": "backend/node_modules/tesseract.js-core/**/*.wasm"
     }
   }
 }
