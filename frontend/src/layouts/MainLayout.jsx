@@ -32,26 +32,29 @@ export default function MainLayout({ children }) {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setModalType('email')}
-              className="hidden sm:flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-pink-700 bg-pink-50 hover:bg-pink-100 border border-pink-200 transition-colors"
+              className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-pink-700 bg-pink-50 hover:bg-pink-100 border border-pink-200 transition-colors"
+              title="Log Cold Email"
             >
-              <Mail className="w-3.5 h-3.5" />
-              <span>Log Cold Email</span>
+              <Mail className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">Log Cold Email</span>
             </button>
 
             <button
               onClick={() => setModalType('manual')}
               className="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-sm transition-colors"
+              title="Add Manually"
             >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>Add Manually</span>
+              <Edit3 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">Add Manually</span>
             </button>
 
             <button
               onClick={() => setModalType('upload')}
-              className="flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all active:scale-95"
+              className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all active:scale-95"
+              title="Upload Screenshots"
             >
               <UploadCloud className="w-4 h-4" />
-              <span>Upload Screenshots</span>
+              <span className="hidden sm:inline">Upload Screenshots</span>
             </button>
           </div>
         </div>
