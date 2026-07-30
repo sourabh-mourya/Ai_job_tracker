@@ -4,6 +4,19 @@
   "private": true,
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
-    "install": "cd api && npm install"
+    "install": "cd backend && npm install",
+    "postinstall": "cd backend && npx prisma generate"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@langchain/core": "^0.3.38",
+    "@langchain/google-genai": "^0.1.9",
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "tesseract.js": "^7.0.0",
+    "zod": "^3.24.1"
   }
 }
