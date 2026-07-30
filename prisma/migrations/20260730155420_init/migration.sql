@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Application" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "company" TEXT NOT NULL,
     "position" TEXT,
     "appliedDate" TEXT,
@@ -8,16 +8,19 @@ CREATE TABLE "Application" (
     "status" TEXT NOT NULL DEFAULT 'Applied',
     "location" TEXT,
     "recruiter" TEXT,
-    "confidence" REAL,
+    "confidence" DOUBLE PRECISION,
     "notes" TEXT,
     "tags" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "imageHash" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ColdEmail" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "company" TEXT NOT NULL,
     "recruiterName" TEXT,
     "recruiterEmail" TEXT,
@@ -27,6 +30,11 @@ CREATE TABLE "ColdEmail" (
     "responseDate" TEXT,
     "status" TEXT NOT NULL DEFAULT 'Sent',
     "notes" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ColdEmail_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Application_imageHash_key" ON "Application"("imageHash");
