@@ -2,18 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 import applicationRoutes from './routes/applicationRoutes.js';
 import coldEmailRoutes from './routes/coldEmailRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import { authMiddleware } from './middlewares/authMiddleware.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Load .env from the root directory instead of backend/
-dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 8000;
